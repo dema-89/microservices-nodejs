@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moderation-deployment
+  labels:
+    app: moderation
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: 
+      maxSurge: "25%"
+      maxUnavailable: "25%"
+  selector:
+    matchLabels:
+      app: moderation
+  template:
+    metadata:
+      labels:
+        app: moderation
+    spec:
+      containers:
+      - name: moderation
+        image: a1lf0ns0/moderation:latest 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: moderation
+  name: moderation-srv
+spec:
+  ports:
+  - port: 4003
+    protocol: TCP
+    targetPort: 4003
+  selector:
+    app: moderation
+status:
+  loadBalancer: {}

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: query-service-deployment
+  labels:
+    app: query-service	
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: 
+      maxSurge: "25%"
+      maxUnavailable: "25%"
+  selector:
+    matchLabels:
+      app: query-service	
+  template:
+    metadata:
+      labels:
+        app: query-service	
+    spec:
+      containers:
+      - name: query-service	
+        image: a1lf0ns0/query-service:latest 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: query-service	
+  name: query-service-srv
+spec:
+  ports:
+  - port: 4002
+    protocol: TCP
+    targetPort: 4002
+  selector:
+    app: query-service	
+status:
+  loadBalancer: {}
